@@ -1,6 +1,7 @@
 # main.py
 import sys
 import csv
+import pprint
 
 def readMasses():
     # read from masses.csv
@@ -31,7 +32,7 @@ def orderDict(unsortedDict):
     return sorted_dict
 
 def find_changes(n, coins):
-    print(n)
+    #print(n)
     if n < -1:
         return []
     if n < 1:
@@ -48,22 +49,76 @@ def find_changes(n, coins):
 
 if __name__ == "__main__":
     arglen = len(sys.argv)
-    if arglen != 2:
-        print("Usage: python sum.py <target mass sum>")
+    if arglen != 3:
+        print("Usage: python sum.py <target mass sum> <amino sequence length")
         quit(0)
     for i, arg in enumerate(sys.argv):
         print(f"Argument {i:>6}: {arg}")
 
     target_mass = float(sys.argv[1])
+    num_aminos = int(sys.argv[2])
 
     massDict = readMasses()
     massDict = orderDict(massDict)
     print(massDict)
-    massList = massDict.values()
-    roundedMassList = []
-    for m in massList:
-        roundedMassList.append(int(m))
+    roundedMassDict = {}
+    #massList = massDict.values()
+    #roundedMassList = []
+    #for m in massList:
+        #roundedMassDict[] =
+        #roundedMassList.append(int(m))
+    massKeys = list(massDict.keys())
+    massValues = list(massDict.values())
+    roundedMassDict = {massKeys[i] : int(massValues[i]) for i in range(len(massKeys))}
+    roundedMassList = roundedMassDict.values()
     combinations = find_changes(target_mass,roundedMassList)
-    print(combinations)
+    answer = []
+    for c in combinations:
+        mass_sum = 0
+        #answer.append(c)
+        if len(c) == num_aminos:
+            amino_super = [[]]
+            aminos = []
+            aminos2 = []
+            doppelganger = 0#False
+            for mass in c:
+                if mass == 113 or mass == 128:
+                    doppelganger += 1#True
+                    old_length = len(amino_super)
+                    for i in range(old_length):
+                        new_amino_list = []
+                        for a in amino_super[i]:
+                            new_amino_list.append(a)
+                        amino_super.append(new_amino_list)
+                    #for a in amino_super[0]:
+                    #    amino_super[len(amino_super)].append(a)
+                    if mass == 113:
+                        for i in range(len(amino_super)):
+                            if i<len(amino_super)/2:
+                                amino_super[i].append('Ile')
+                            else:
+                                amino_super[i].append('Leu')
+                        continue
+                    elif mass == 128:
+                        for i in range(len(amino_super)):
+                            if i<len(amino_super)/2:
+                                amino_super[i].append('Gln')
+                            else:
+                                amino_super[i].append('Lys')
+                        continue
+                for amino in roundedMassDict:
+                    if roundedMassDict[amino] == mass:
+                        for aminos_list in amino_super:
+                            aminos_list.append(amino)
+                            
+                        #aminos.append(amino)
+                        #if doppelganger:
+                         #   aminos2.append(amino)
+            for aminos_list in amino_super:
+                answer.append(aminos_list)
+                #answer.append(mass_sum)
+            #if doppelganger:
+                #answer.append(aminos2)
+    pprint.pprint(answer)
 
            
