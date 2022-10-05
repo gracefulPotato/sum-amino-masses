@@ -62,63 +62,60 @@ if __name__ == "__main__":
     massDict = orderDict(massDict)
     print(massDict)
     roundedMassDict = {}
-    #massList = massDict.values()
-    #roundedMassList = []
-    #for m in massList:
-        #roundedMassDict[] =
-        #roundedMassList.append(int(m))
     massKeys = list(massDict.keys())
     massValues = list(massDict.values())
     roundedMassDict = {massKeys[i] : int(massValues[i]) for i in range(len(massKeys))}
     roundedMassList = roundedMassDict.values()
     combinations = find_changes(target_mass,roundedMassList)
     answer = []
+    true_masses = []
     for c in combinations:
-        mass_sum = 0
-        #answer.append(c)
         if len(c) == num_aminos:
             amino_super = [[]]
-            aminos = []
-            aminos2 = []
-            doppelganger = 0#False
+            true_mass_list = [0]
             for mass in c:
                 if mass == 113 or mass == 128:
-                    doppelganger += 1#True
                     old_length = len(amino_super)
                     for i in range(old_length):
                         new_amino_list = []
+                        new_mass = 0
+                        
                         for a in amino_super[i]:
                             new_amino_list.append(a)
+                        new_mass += true_mass_list[i]
                         amino_super.append(new_amino_list)
-                    #for a in amino_super[0]:
-                    #    amino_super[len(amino_super)].append(a)
+                        true_mass_list.append(new_mass)
                     if mass == 113:
                         for i in range(len(amino_super)):
                             if i<len(amino_super)/2:
                                 amino_super[i].append('Ile')
                             else:
                                 amino_super[i].append('Leu')
+                            true_mass_list[i]+=113.0841
                         continue
                     elif mass == 128:
                         for i in range(len(amino_super)):
                             if i<len(amino_super)/2:
                                 amino_super[i].append('Gln')
+                                true_mass_list[i]+=128.0586
                             else:
                                 amino_super[i].append('Lys')
+                                true_mass_list[i]+=128.09496
                         continue
                 for amino in roundedMassDict:
                     if roundedMassDict[amino] == mass:
+                        i=0
                         for aminos_list in amino_super:
                             aminos_list.append(amino)
+                            true_mass_list[i]+=massDict[amino]
+                            i+=1
                             
-                        #aminos.append(amino)
-                        #if doppelganger:
-                         #   aminos2.append(amino)
             for aminos_list in amino_super:
                 answer.append(aminos_list)
-                #answer.append(mass_sum)
-            #if doppelganger:
-                #answer.append(aminos2)
-    pprint.pprint(answer)
+            for true_mass in true_mass_list:
+                true_masses.append(true_mass)
+
+    answer_dict = {true_masses[i] : answer[i] for i in range(len(answer))}
+    pprint.pprint(answer_dict)
 
            
