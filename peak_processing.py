@@ -26,6 +26,7 @@ if __name__ == "__main__":
 
     massDict = sum.readMasses()
     massDict = sum.orderDict(massDict)
+    massDict['Fake'] = 148.227
     print(massDict)
 
     sequences = {}
@@ -38,12 +39,24 @@ if __name__ == "__main__":
             difference = round(bigger_mass - amino_mass, 3)
             #print(difference)
             if difference in peak_masses:
-                #print("HIT!")
-                #print(difference)
+                print("HIT!")
+                print(difference)
                 sequences[(bigger_mass,difference)] = [key]
+                for key2 in massDict.keys():
+                    print("checking " + key2 )
+                    amino_mass = massDict[key2]
+                    difference2 = round(difference - amino_mass, 3)
+                    print("difference2: "+str(difference2))
+                    if difference2 in peak_masses:
+                        print("HIT TWO!")
+                        print(difference2)
+                        sequences[(bigger_mass,difference2)] = [key, key2]
+                        
     print("\n------------------------------------------")
     print("Amino acid fragment sequences identified:")
-    print(sequences)
+    for k in sequences:
+        print(k,end='\t')
+        print(sequences[k])
     
 
     # identify which peaks are important
